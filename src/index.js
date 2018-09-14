@@ -5,10 +5,10 @@ module.exports = function check(str, bracketsConfig) {
   let isCorrect = null;
   for(let i = 0; i < brackets.length; i++) {
     let bracket = brackets[i];
-    if(isOpenBracket(bracket, bracketsConfig)) {
+    if(checkBracketType(bracket, bracketsConfig) === OPEN_BRACKET) {
       backStackOpenBracket.push(bracket);
     }
-    if(!isOpenBracket(bracket, bracketsConfig)) {
+    if(checkBracketType(bracket, bracketsConfig) === CLOSE_BRACKET) {
       backStackCloseBracket.unshift(bracket);
     }
     if(backStackOpenBracket.length < backStackCloseBracket.length) {
@@ -38,17 +38,24 @@ module.exports = function check(str, bracketsConfig) {
   return isCorrect;
 }
 
-function isOpenBracket(bracket, config) {
-  let isOpen = null;
+const OPEN_BRACKET = 'OPEN_BRACKET';
+const CLOSE_BRACKET = 'CLOSE_BRACKET';
+const UNIVERSAL_BRACKET = 'UNIVERSAL_BRACKET';
+
+function checkBracketType(bracket, config) {
+  let type;
   config.forEach(pair => {
     if(pair[0] === bracket) {
-      isOpen = true;
+      type = OPEN_BRACKET;
     }
     if(pair[1] === bracket) {
-      isOpen = false;
+      type = CLOSE_BRACKET;
+    }
+    if(pair[0] === bracket && pair[1] === bracket) {
+      type = UNIVERSAL_BRACKET;
     }
   });
-  return isOpen;
+  return type;
 }
 
 function isPairBrackes(brackets, config) {
